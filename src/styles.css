@@ -1,0 +1,7 @@
+/* Add application styles & imports to this file! */
+
+@import "~mapbox-gl/dist/mapbox-gl.css";
+
+body {
+  margin: 0px;
+}
