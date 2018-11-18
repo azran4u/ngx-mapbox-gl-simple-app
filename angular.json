@@ -22,8 +22,12 @@
               "src/favicon.ico",
               "src/assets"
             ],
-            "styles": [],
-            "scripts": []
+            "styles": [
+              "./node_modules/mapbox-gl/dist/mapbox-gl.css"
+            ],
+            "scripts": [
+              "./node_modules/mapbox-gl/dist/mapbox-gl.js"
+            ]
           },
           "configurations": {
             "production": {
