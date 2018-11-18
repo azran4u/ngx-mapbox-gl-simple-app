@@ -8,13 +8,39 @@ import { MapMouseEvent, Map } from 'mapbox-gl';
 })
 export class AppComponent implements OnInit {
 
-  pitch = 0;  
-
   map: Map;
+  imageLoaded = false;
   cursorStyle: string;
-
   center = [-90.96, -0.47];
-
+  data = {
+    'type': 'geojson',
+    'data': {
+      'type': 'FeatureCollection',
+      'features': [
+      {
+          'type': 'Feature',
+          'geometry': {
+              'type': 'Point',
+              'coordinates': [-91.395263671875, -0.9145729757782163]
+          }
+      },
+      {
+        'type': 'Feature',
+        'geometry': {
+            'type': 'Point',
+            'coordinates': [-90.32958984375,-0.6344474832838974]
+        }
+      },
+      {
+        'type': 'Feature',
+        'geometry': {
+            'type': 'Point',
+            'coordinates': [-92.32958984375,-0.6344474832838974]
+        }
+      }
+      ]
+    }
+  };
   geometries = [
     {
       'type': 'Point',
@@ -45,6 +71,6 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(){
-    
+
   }
 }

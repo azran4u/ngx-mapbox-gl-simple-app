@@ -5,24 +5,21 @@
   [cursorStyle]="cursorStyle"
   (load)="map = $event"
   >
-  <mgl-geojson-source
-    id="symbols-source"
-  >
-    <mgl-feature
-      *ngFor="let geometry of geometries"
-      [geometry]="geometry"
-    ></mgl-feature>
-  </mgl-geojson-source>
-  <mgl-layer
-      id="symbols"
-      type="symbol"
-      source="symbols-source"
-      [layout]="{
-        'icon-image': 'rocket-15-240'
-      }"
-      (click)="centerMapTo($event)"
-      (mouseEnter)="cursorStyle = 'pointer'"
-      (mouseLeave)="cursorStyle = ''"
+  <mgl-image
+      id="cat"
+      url="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cat_silhouette.svg/400px-Cat_silhouette.svg.png"
+      (loaded)="imageLoaded = true"
     >
-    </mgl-layer>
+  </mgl-image>
+  <mgl-layer
+    *ngIf="imageLoaded"
+    id="points"
+    type="symbol"
+    [source]="data"
+    [layout]="{'icon-image': 'cat', 'icon-size': 0.1}"
+    (click)="centerMapTo($event)"
+    (mouseEnter)="cursorStyle = 'pointer'"
+    (mouseLeave)="cursorStyle = ''"
+  >
+  </mgl-layer>
 </mgl-map>
