@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { MapMouseEvent, Map, Layer, Marker, GeoJSONSource } from 'mapbox-gl';
+import { MapMouseEvent, Map, Layer, Marker, GeoJSONSource, LngLatLike, LngLat } from 'mapbox-gl';
+import { GeoJson, FeatureCollection } from './map';
+import { Geometry, geometry, Point } from '@turf/helpers';
 
 @Component({
   selector: 'my-app',
@@ -9,11 +11,18 @@ import { MapMouseEvent, Map, Layer, Marker, GeoJSONSource } from 'mapbox-gl';
 export class AppComponent implements OnInit {
   
   map: Map;
+  style = 'mapbox://styles/mapbox/outdoors-v9';
   imageLoaded = false;
   cursorStyle: string;
-  center = [34,32];
+  center: LngLatLike = [34,32];
   marker: Marker;
-  layer: any = {
+  message = 'Hello World!';
+  a = 10;
+  // data
+  source: any;
+  markers: any;
+
+  layer: Layer = {
     "id": "points",
     "type": "symbol",
     "source": {
@@ -46,99 +55,119 @@ export class AppComponent implements OnInit {
     }
   };
 
-  ngOnInit(){
+  constructor(){
+  }
 
+  ngOnInit(){
+    this.initializeMap();
+  }
+  
+  private initializeMap() {
+    this.buildMap();   
+    this.map.flyTo({          
+      center: this.center
+    })
+  }
+   
+  buildMap() {
     mapboxgl.accessToken = 'pk.eyJ1IjoiYXpyYW40dSIsImEiOiJjam9rMDhqZzMwOXMwM3dxYWF3ZTd6ZjN2In0.3nut3OCPi9M0kL3cZ1JKtQ';    
     this.map = new mapboxgl.Map({
       container: 'map',
-      style: 'mapbox://styles/mapbox/streets-v9', // stylesheet location
-      center: this.center,
-      zoom: 9 // starting zoom
+      style: this.style,
+      zoom: 0,
+      center: this.center
     });
 
-    var radius = 20;
+    /// Add map controls
+    this.map.addControl(new mapboxgl.NavigationControl());
 
-    function pointOnCircle(angle) {
-      return {
-        "type": "Point",
-        "coordinates": [
-            Math.cos(angle) * radius,
-            Math.sin(angle) * radius
-        ]
-      };  
-    }
+    //// Add Marker on Click
+    this.map.on('click', (event) => {
+      const coordinates = [event.lngLat.lng, event.lngLat.lat];
+      this.center = coordinates;
+      const newMarker   = new GeoJson(coordinates, { message: this.message });
+      // this.mapService.createMarker(newMarker)
+    })
 
-    this.map.on('load', () => {
-      // Add a source and layer displaying a point which will be animated in a circle.
-      // a: GeoJSONSource;      
-      
-    //   this.map.addSource('firebase', {
-    //     type: 'geojson',
-    //     data: {
-    //       type: 'FeatureCollection',
-    //       features: []
-    //     }
-    //  });
+    /// Add realtime firebase data on map load
+    this.map.on('load', (event) => {
 
-    
-      // this.map.addLayer({
-      //   "id": "point",
-      //   "source": "point",
-      //   "type": "circle",
-      //   "paint": {
-      //       "circle-radius": 10,
-      //       "circle-color": "#007cbf"
-      //   }
-      // });
+      /// register source
+      this.map.addSource('point', {         
+          type: 'geojson',
+          data: {
+            type: 'FeatureCollection',
+            features: [
+              {
+                type: "Feature",
+                geometry: {
+                  type: "Point",
+                  coordinates: [10,10]
+                },
+                properties: null
+              },
+              {
+                type: "Feature",
+                geometry: {
+                  type: "Point",
+                  coordinates: [20,20]
+                },
+                properties: null
+              }
+            ]
+          }
+        }
+      );
 
-      this.displayCat();
-      // Start the animation.
-      // this.marker = new mapboxgl.Marker();
 
-      // function animateMarker(timestamp) {
-      //   var radius = 20;
-    
-      //   // Update the data to a new position based on the animation timestamp. The
-      //   // divisor in the expression `timestamp / 1000` controls the animation speed.
-      //   this.marker.setLngLat([
-      //       Math.cos(timestamp / 1000) * radius,
-      //       Math.sin(timestamp / 1000) * radius
-      //   ]);
-    
-      //   // Ensure it's added to the map. This is safe to call if it's already added.
-      //   this.marker.addTo(this.map);
-    
-      //   // Request the next frame of the animation.
-      //   requestAnimationFrame(animateMarker);
-      // };
+      this.map.addLayer({
+        id: "point",
+        type: "circle",
+        source: "point",        
+        paint: {
+            "circle-radius": 10,
+            "circle-color": "#007cbf"
+        }
+      });      
+    })    
+  }
 
-      // requestAnimationFrame(animateMarker);
+  removeMarker(marker) {
+    // this.mapService.removeMarker(marker.$key)
+  }
+
+  flyTo(data: GeoJson) {
+    this.map.flyTo({
+      center: data.geometry.coordinates
+    })
+  };  
+
+  centerMap(){            
+    console.log(`centerMap : ${this.center}`);
+    this.map.flyTo({          
+      center: this.center
+    });
+
+    (<GeoJSONSource>(this.map.getSource('point'))).setData({
+      type: 'FeatureCollection',
+      features: [
+        {
+          type: "Feature",
+          geometry: {
+            type: "Point",
+            coordinates: [this.a++,this.a++]
+          },
+          properties: null
+        },
+        {
+          type: "Feature",
+          geometry: {
+            type: "Point",
+            coordinates: [21,21]
+          },
+          properties: null
+        }
+      ]
     });
   }
-
-  displayCat(){
-    this.map.loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cat_silhouette.svg/400px-Cat_silhouette.svg.png', (error, image) => {
-        if (error) throw error;
-        this.map.addImage('cat', image);        
-        this.map.addLayer(this.layer);
-      });
-  };
-
-  moveCat(){
-    this.layer.source.data.features[0].geometry.coordinates=[50,50];    
-  };
-
-  centerMap() {
-    this.map.setCenter(this.center);
-  };
-
-  centerMapTo(evt: MapMouseEvent) {
-    this.moveCat();
-    this.center = (<any>evt).features[0].geometry.coordinates;
-    this.layer.source.data.features[2].geometry=
-    {...this.layer.source.data.features[2].geometry, ...{coordinates :this.center}}
-    this.layer = {...this.layer};
-  }
-
-  
 }
