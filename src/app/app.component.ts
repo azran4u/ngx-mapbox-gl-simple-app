@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MapMouseEvent, Map, Layer, Marker, GeoJSONSource, LngLatLike, LngLat, GeoJSONSourceRaw } from 'mapbox-gl';
 import { GeoJson, FeatureCollection } from './map';
 import { Geometry, geometry, Point } from '@turf/helpers';
+import {Museums} from '../data/museums';
 
 @Component({
   selector: 'my-app',
@@ -21,6 +22,7 @@ export class AppComponent implements OnInit {
   // data
   source: any;
   markers: any;
+  
 
   twoPoints: GeoJSONSourceRaw = {         
     type: 'geojson',
@@ -69,7 +71,8 @@ export class AppComponent implements OnInit {
       container: 'map',
       style: this.style,
       zoom: 5,
-      center: this.center
+      center: this.center,
+      renderWorldCopies: false
     });
 
     /// Add map controls
@@ -143,23 +146,8 @@ export class AppComponent implements OnInit {
   }
 
   museumsLayer(){
-    this.map.addSource('museums', {
-      type: 'vector',
-      url: 'mapbox://mapbox.2opop9hr'
-    });
-    this.map.addLayer({
-        'id': 'museums',
-        'type': 'circle',
-        'source': 'museums',
-        'layout': {
-            'visibility': 'visible'
-        },
-        'paint': {
-            'circle-radius': 8,
-            'circle-color': 'rgba(55,148,179,1)'
-        },
-        'source-layer': 'museum-cusco'
-    });    
+    this.map.addSource('museums', Museums.getSource());
+    this.map.addLayer(Museums.getLayer());    
   }
 
   museumsLayerShow(){
