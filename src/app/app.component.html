@@ -1,48 +1,5 @@
-<div id='map' style='width: 100%; height: 100%;'></div>
+<div id="map"></div>
 <button (click)="centerMap()" style='height:50px'>
   center map
 </button>
 
-<!-- <mgl-map
-  [style]="'mapbox://styles/mapbox/light-v9'"
-  [zoom]="[8]"
-  [center]="center"
-  [cursorStyle]="cursorStyle"
-  (load)="map = $event"
-  >
-  <mgl-image
-      id="cat"
-      url="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cat_silhouette.svg/400px-Cat_silhouette.svg.png"
-      (loaded)="imageLoaded = true"
-    >
-  </mgl-image> -->
-  <!-- <mgl-layer
-    *ngIf="imageLoaded"
-    id="points"
-    type="symbol"
-    [source]="data"
-    [layout]="{'icon-image': 'cat', 'icon-size': 0.1}"
-    (click)="centerMapTo($event)"
-    (mouseEnter)="cursorStyle = 'pointer'"
-    (mouseLeave)="cursorStyle = ''"
-  >
-  </mgl-layer> -->
-  <!-- <mgl-geojson-source
-  *ngIf="imageLoaded"
-  id="cats"
->
-  <mgl-feature
-     *ngFor="let feature of data.data.features"
-      [geometry]="feature.geometry"
-  ></mgl-feature>
-</mgl-geojson-source>
-<mgl-layer
-  *ngIf="imageLoaded"
-  id="cat"
-  type="symbol"
-  source="cats"
-  (click)="centerMapTo($event)"
-  [layout]="{'icon-image': 'cat', 'icon-size': 0.1}"
->
-</mgl-layer>
-</mgl-map> -->

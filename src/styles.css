@@ -3,5 +3,6 @@
 @import "~mapbox-gl/dist/mapbox-gl.css";
 
 body {
-  margin: 0px;
+  margin: 0;
+  padding:0;
 }

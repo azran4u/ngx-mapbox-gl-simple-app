@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MapMouseEvent, Map, Layer, Marker, GeoJSONSource, LngLatLike, LngLat } from 'mapbox-gl';
+import { MapMouseEvent, Map, Layer, Marker, GeoJSONSource, LngLatLike, LngLat, GeoJSONSourceRaw } from 'mapbox-gl';
 import { GeoJson, FeatureCollection } from './map';
 import { Geometry, geometry, Point } from '@turf/helpers';
 
@@ -21,6 +21,40 @@ export class AppComponent implements OnInit {
   // data
   source: any;
   markers: any;
+
+  twoPoints: GeoJSONSourceRaw = {         
+    type: 'geojson',
+    data: {
+      type: 'FeatureCollection',
+      features: [
+        {
+          type: "Feature",
+          geometry: {
+            type: "Point",
+            coordinates: [10,10]
+          },
+          properties: null
+        },
+        {
+          type: "Feature",
+          geometry: {
+            type: "Point",
+            coordinates: [20,20]
+          },
+          properties: null
+        }
+      ]
+    }
+  };
+  pointLayer: Layer = {
+    id: "point",
+    type: "circle",
+    source: "point",        
+    paint: {
+        "circle-radius": 10,
+        "circle-color": "#007cbf"
+    }
+  };
 
   layer: Layer = {
     "id": "points",
@@ -93,42 +127,8 @@ export class AppComponent implements OnInit {
     this.map.on('load', (event) => {
 
       /// register source
-      this.map.addSource('point', {         
-          type: 'geojson',
-          data: {
-            type: 'FeatureCollection',
-            features: [
-              {
-                type: "Feature",
-                geometry: {
-                  type: "Point",
-                  coordinates: [10,10]
-                },
-                properties: null
-              },
-              {
-                type: "Feature",
-                geometry: {
-                  type: "Point",
-                  coordinates: [20,20]
-                },
-                properties: null
-              }
-            ]
-          }
-        }
-      );
-
-
-      this.map.addLayer({
-        id: "point",
-        type: "circle",
-        source: "point",        
-        paint: {
-            "circle-radius": 10,
-            "circle-color": "#007cbf"
-        }
-      });      
+      this.map.addSource('point', this.twoPoints);
+      this.map.addLayer(this.pointLayer);      
     })    
   }
 
