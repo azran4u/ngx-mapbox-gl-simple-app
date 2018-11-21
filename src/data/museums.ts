@@ -6,7 +6,32 @@ export class Museums{
         "url": "mapbox://mapbox.2opop9hr"
     };
 
-    static layer: Layer = {
+    static data: GeoJSONSourceRaw = {
+        type: "geojson",
+        data: {
+          type: "FeatureCollection",
+          features: [
+            {
+              type: "Feature",
+              geometry: {
+                type: "Point",
+                coordinates: [34,34]
+              },
+              properties: null
+            },
+            {
+              type: "Feature",
+              geometry: {
+                type: "Point",
+                coordinates: [35,35]
+              },
+              properties: null
+            }
+          ]
+        }
+    };
+
+    static layerVector: Layer = {
         'id': 'museums',
         'type': 'circle',
         'source': 'museums',
@@ -20,11 +45,42 @@ export class Museums{
         'source-layer': 'museum-cusco'
     }
 
-    public static getSource() : VectorSource{
+    static layerGeo: Layer = {
+        "id": "museums",
+            "type": "line",
+            "source": "museums",
+            "paint": {
+                "line-color": "yellow",
+                "line-opacity": 0.75,
+                "line-width": 5
+            }
+        
+        
+        // 'id': 'museums',
+        // 'type': 'circle',
+        // 'source': 'museums',
+        // 'layout': {
+        //     'visibility': 'visible'
+        // },
+        // 'paint': {
+        //     'circle-radius': 8,
+        //     'circle-color': 'rgba(55,148,179,1)'
+        // }
+    }
+
+    public static getVectorSource() : VectorSource{
         return this.source;
     }
 
-    public static getLayer() : Layer{
-        return this.layer;
+    public static getGeoJsonSourceRaw() : GeoJSONSourceRaw{
+        return this.data;
+    }
+
+    public static getLayerVector() : Layer{
+        return this.layerVector;
+    }
+
+    public static getLayerGeo() : Layer{
+        return this.layerGeo;
     }
 }

@@ -1,5 +1,15 @@
 import { VectorSource, MapMouseEvent, Map, Layer, Marker, GeoJSONSource, LngLatLike, LngLat, GeoJSONSourceRaw } from 'mapbox-gl';
 
+export class Hike{
+    static source: GeoJSONSourceRaw = {
+        type: "geojson",
+        data: {
+            "type": "FeatureCollection",
+            "features": []
+        }
+    }
+}
+
 // export class Hike{
 //     static source: GeoJSONSourceRaw = {
 //         "type": "geojson",

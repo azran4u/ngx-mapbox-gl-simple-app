@@ -7,6 +7,7 @@
     "@angular/compiler": "5.2.8",
     "@angular/core": "^5.2.8",
     "@angular/forms": "5.2.8",
+    "@angular/http": "^7.0.4",
     "@angular/platform-browser": "5.2.8",
     "@angular/platform-browser-dynamic": "5.2.8",
     "@angular/router": "5.2.8",
