@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MapMouseEvent, GeoJSONGeometry, Map, Layer, Marker, GeoJSONSource, LngLatLike, LngLat, GeoJSONSourceRaw } from 'mapbox-gl';
-import { GeoJson, FeatureCollection } from './map';
+import { GeoJson, FeatureCollection, IMap, IMapLayer } from './map';
 import { Geometry, geometry, Point } from '@turf/helpers';
 import {Museums} from '../data/museums';
 // import * as data from '../data/hike.geojson';
@@ -24,54 +24,10 @@ export class AppComponent implements OnInit {
   source: any;
   markers: any;
   collection:any;
-
-  twoPoints: GeoJSONSourceRaw = {         
-    type: 'geojson',
-    data: {
-      type: 'FeatureCollection',
-      features: [
-        {
-          type: "Feature",
-          geometry: {
-            type: "Point",
-            coordinates: [10,10]
-          },
-          properties: null
-        },
-        {
-          type: "Feature",
-          geometry: {
-            type: "Point",
-            coordinates: [20,20]
-          },
-          properties: null
-        }
-      ]
-    }
-  };
-  pointLayer: Layer = {
-    id: "point",
-    type: "circle",
-    source: "point",        
-    paint: {
-        "circle-radius": 10,
-        "circle-color": "#007cbf"
-    }    
-  };
-
-  markerPoint: GeoJSON.FeatureCollection<GeoJSONGeometry> = {
-    "type": "FeatureCollection",
-    "features": [{
-      "type": "Feature",
-      "properties": {
-        "description": 'Hello Popup'
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [-57.9510569572449, -34.9103230869756]
-      }
-    }]
-  };
+  twoPoints: GeoJSONSourceRaw;
+  pointLayer: Layer;
+  markerPoint: GeoJSON.FeatureCollection<GeoJSONGeometry>;
+  mapEntities: IMap;
 
   constructor(){
   }
@@ -79,6 +35,8 @@ export class AppComponent implements OnInit {
   ngOnInit(){
     this.initializeMap();
     this.initializeCollection();      
+    this.initializePointData();
+    this.initializeImapData();
   }
    
   initializeMap() {
@@ -103,17 +61,35 @@ export class AppComponent implements OnInit {
     })    
   }
 
-  initializeCollection(){
-    this.collection = {
-      type: 'geojson',
-      data: {
+  mapClickEventHandler(){
+    //// Add Marker on Click
+    this.map.on('click', (event) => {
+    const coordinates = [event.lngLat.lng, event.lngLat.lat];
+    this.center = coordinates;    
+    })
+  }
+  
+  addMapElements(){
+        
+    let a: IMapLayer[] = this.mapEntities.getLayers();
+    let b: IMapLayer = a.pop();
+    this.map.addSource(b.getId(), b.getSource());
+    this.map.addLayer(b.getLayer()); 
+
+    // this.map.addSource('point', this.collection);
+    // this.map.addLayer(this.pointLayer); 
+    this.museumsLayer();
+  }
+
+    updateMapElements(){
+    (<GeoJSONSource>(this.map.getSource('point'))).setData({
       type: 'FeatureCollection',
       features: [
         {
           type: "Feature",
           geometry: {
             type: "Point",
-            coordinates: [this.a,this.a]
+            coordinates: [this.a++,this.a++]
           },
           properties: null
         },
@@ -126,33 +102,15 @@ export class AppComponent implements OnInit {
           properties: null
         }
       ]
-    }
-  }
-  }
-
-  mapClickEventHandler(){
-    //// Add Marker on Click
-    this.map.on('click', (event) => {
-    const coordinates = [event.lngLat.lng, event.lngLat.lat];
-    this.center = coordinates;
-    const newMarker   = new GeoJson(coordinates, { message: this.message });
-    // this.mapService.createMarker(newMarker)
-    })
-  }
-  
-  addMapElements(){
-    /// register source
-    this.map.addSource('point', this.collection);
-    this.map.addLayer(this.pointLayer); 
-    this.museumsLayer();
-  }
-
-  updateMapElements(){
-    this.a+=10;
-    this.collection.data.features[0].coordinates=[this.a, this.a];
-
-    (<GeoJSONSource>(this.map.getSource('point'))).setData({...this.collection.data});
+    });
   }  
+
+  // updateMapElements(){
+  //   this.a+=10;
+  //   this.collection.data.features[0].coordinates=[this.a, this.a];
+
+  //   (<GeoJSONSource>(this.map.getSource('point'))).setData({...this.collection.data});
+  // }  
 
   flyTo(data: GeoJson) {
     this.center = data.geometry.coordinates;
@@ -249,6 +207,87 @@ export class AppComponent implements OnInit {
     });
   }
 
+  initializeCollection(){
+    this.collection = {
+      type: 'geojson',
+      data: {
+      type: 'FeatureCollection',
+      features: [
+        {
+          type: "Feature",
+          geometry: {
+            type: "Point",
+            coordinates: [this.a,this.a]
+          },
+          properties: null
+        },
+        {
+          type: "Feature",
+          geometry: {
+            type: "Point",
+            coordinates: [21,21]
+          },
+          properties: null
+        }]      
+      }
+    }
+  }
+  
+  initializePointData(){
+    this.twoPoints = {         
+      type: 'geojson',
+      data: {
+        type: 'FeatureCollection',
+        features: [
+          {
+            type: "Feature",
+            geometry: {
+              type: "Point",
+              coordinates: [10,10]
+            },
+            properties: null
+          },
+          {
+            type: "Feature",
+            geometry: {
+              type: "Point",
+              coordinates: [20,20]
+            },
+            properties: null
+          }
+        ]
+      }
+    };
+    this.pointLayer = {
+      id: "point",
+      type: "circle",
+      source: "point",        
+      paint: {
+          "circle-radius": 10,
+          "circle-color": "#007cbf"
+      }    
+    };
+  
+    this.markerPoint = {
+      "type": "FeatureCollection",
+      "features": [{
+        "type": "Feature",
+        "properties": {
+          "description": 'Hello Popup'
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [-57.9510569572449, -34.9103230869756]
+        }
+      }]
+    };
+  }
+
+  initializeImapData(){
+    let points: IMapLayer = new IMapLayer('point', this.twoPoints, this.pointLayer);    
+    let layers: IMapLayer[] = [points];
+    this.mapEntities = new IMap(layers);        
+  }
   // movingElement(){
   //   var coordinates = data.features[0].geometry.coordinates;
 
