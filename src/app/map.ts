@@ -1,4 +1,5 @@
 import {Layer, VectorSource , RasterSource , GeoJSONSource , ImageSource , VideoSource , GeoJSONSourceRaw} from 'mapbox-gl';
+import { Feature } from '@turf/helpers';
 
 export class Map {
 }
@@ -24,6 +25,12 @@ export class IMapLayer {
 
     public getLayer(){
         return this.layer;
+    }
+
+    public addFeature(feature: Feature){
+        let a: any = this.source;        
+        a.data.features.push(feature);
+        this.source = a;
     }
 }
 
