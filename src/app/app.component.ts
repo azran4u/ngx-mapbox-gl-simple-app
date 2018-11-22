@@ -19,6 +19,11 @@ export class AppComponent implements OnInit {
     "features": []
   };
   
+  source : GeoJSONSourceRaw = {
+    "type": "geojson",
+    "data": this.geojson
+  };
+
   layer : Layer = {
     id: "point",
     type: "circle",
@@ -29,11 +34,6 @@ export class AppComponent implements OnInit {
     }    
   };
 
-  source : GeoJSONSourceRaw = {
-    "type": "geojson",
-    "data": this.geojson
-  };
-  
   marker : any = {
     type: "Feature",
     geometry: {
@@ -64,7 +64,7 @@ export class AppComponent implements OnInit {
     this.map.on('load', (event) => {
       this.mapClickEventHandler();     
       this.centerMap();              
-      this.addMarkerToFeatures();
+      this.markerInit();
     })    
   }
 
@@ -90,7 +90,7 @@ export class AppComponent implements OnInit {
     }); 
   }
   
-  addMarkerToFeatures(){
+  markerInit(){
     
     this.map.addSource('custom', this.source);   
     this.map.addLayer(this.layer);  
@@ -105,10 +105,10 @@ export class AppComponent implements OnInit {
         this.geojson.features.push(deepClone);     
       }      
     }
-    this.renderMap();
+    this.markerRender();
   }
 
-  renderMap(){
+  markerRender(){
     (<GeoJSONSource>(this.map.getSource('custom'))).setData(this.geojson);   
   }
   markerShow(){
@@ -125,14 +125,12 @@ export class AppComponent implements OnInit {
       var random = Math.floor(Math.random() * 100) - 50;
       (<any>this.geojson.features[_i].geometry).coordinates = [current[0]+random, current[1]+random];
     }
-    this.renderMap();
+    this.markerRender();
   }
 
   markerMoveByTime(){            
     var self = this;    
     var timer = window.setInterval(function() {self.markerMoveRandom();}, 2000);
   }
-  
-
   
 }
