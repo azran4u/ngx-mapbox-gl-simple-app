@@ -441,3 +441,16 @@
 //       }]
 //     };
 //   }
+
+  // imageLoaded = false;
+  // cursorStyle: string;
+  // message = 'Hello World!';
+  // a = 10;
+  // // data
+  
+  // markers: any;
+  // collection:any;
+  // twoPoints: GeoJSONSourceRaw;
+  // pointLayer: Layer;
+  // markerPoint: GeoJSON.FeatureCollection<GeoJSONGeometry>;
+  // mapEntities: IMap;

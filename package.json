@@ -11,6 +11,7 @@
     "@angular/platform-browser": "5.2.8",
     "@angular/platform-browser-dynamic": "5.2.8",
     "@angular/router": "5.2.8",
+    "@mapbox/mapbox-gl-rtl-text": "^0.2.1",
     "@types/geojson": "^7946.0.4",
     "@types/mapbox-gl": "0.44.2",
     "core-js": "2.5.1",
